@@ -2,7 +2,7 @@ require 'pry'
 
 class User
 
-# PUBLIC SECTION
+  # PUBLIC SECTION
   attr_accessor :email, :age
   @@all_users = []
 
@@ -13,11 +13,6 @@ class User
       @email = email
       @age = age
       @@all_users << self
-
-      # thi ObjectSpace thing is just something I found online
-      # it looks more efficient than stuff +=1
-      # also tested with the data validation
-      # when there is format error in email and age it doesn't increment
       puts "User created with email and age information"
     else
       puts "Wrong email or age format.\nEmail should be xxx@xxx.xxx format.\nAge should be natural interger.\nUser creation failded. Please start again."
@@ -27,6 +22,10 @@ class User
   # CLASS METHODS
   def self.count
     ObjectSpace.each_object(self).count
+    # found this ObjectSpace thing online
+    # it looks more efficient than stuff +=1
+    # also tested with the data validation
+    # when there is format error in email and age it doesn't increment
   end
 
   def self.all
@@ -49,9 +48,12 @@ class User
     end
   end
 
+  # PRIVATE SECTION
   private
 
   def check_format(email, age)
+    # email format : has @, has .
+    # age format : is integer
     if (email =~ /@/) && (email =~ /./) && (age.to_i == age)
       true
     else
@@ -60,12 +62,3 @@ class User
   end
 
 end
-
-binding.pry
-puts "Program ends here."
-
-=begin
-def self.all?
-  return @@all_users
-end
-=end

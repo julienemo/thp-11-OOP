@@ -2,6 +2,15 @@ require 'pry'
 require 'time'
 
 class Event
+  class WorkEvent < Event
+    def is_acceptable?
+      if (@attendees.length > 3) || (@duration > 60)
+        false
+      else
+        true
+      end
+    end
+  end
 
   # PUBLIC SECTION
   attr_accessor :start_time, :duration, :title, :attendees
@@ -10,21 +19,29 @@ class Event
 
   # here is how to start a new event
   def initialize(start_time, duration_min, title, attendees)
-    # My event is created, I increment the class var
-    @@event_count += 1
+    # data validation
+    # for the moment I can only validate duration with is positive integer
+    if (duration_min.to_i == duration_min) && (duration_min > 0)
 
-    # these are the instance vars that I pass directly
-    @title = title
-    @attendees = attendees
-    @duration = duration_min
+      # My event is created, I increment the class var
+      @@event_count += 1
 
-    # this var, I need to retreat
-    # I don't put end_time here coz it is in initialize
-    # then if someone modifies the start_time, the end_time won't recalculate
-    @start_time = Time.parse(start_time)
+      # these are the instance vars that I pass directly
+      @title = title
+      @attendees = attendees
+      @duration = duration_min
 
-    # this is only to confirm the user that all is well
-    puts "Event N.#{@@event_count}--'#{@title}' created."
+      # this var, I need to retreat
+      # I don't put end_time here coz it is in initialize
+      # then if someone modifies the start_time, the end_time won't recalculate
+      @start_time = Time.parse(start_time)
+
+      # this is only to confirm the user that all is well
+      self.to_s
+    else
+      puts "Duration needs to be positive integer."
+      puts "Event not created, please start again"
+    end
   end
 
   def end_time
@@ -33,7 +50,7 @@ class Event
     unless @start_time.class == Time
       @start_time = Time.parse(@start_time)
     end
-    @end_time =@start_time+ @duration * 60
+    @end_time = @start_time+ @duration * 60
   end
 
   def postpone_24h
@@ -66,7 +83,22 @@ class Event
     puts "Participants: #{@attendees.join(",")}"
   end
 
+  # this is copy-paste from day 12 course
+  def age_analysis
+      age_array = []
+      average = 0
 
+      @attendees.each do |attendee| #On parcourt tous les participants (objets de type User)
+        age_array << attendee.age #leur âge est stocké dans l'array des âges
+        average = average + attendee.age #leur âge est additionné pour préparer le calcul de la moyenne
+      end
+
+      average = average / attendees.length #on divise la somme des âges pour avoir la moyenne
+
+      puts "Voici les âges des participants :"
+      puts age_array.join(", ")
+      puts "La moyenne d'âge est de #{average} ans"
+    end
 
   private
   def show
@@ -74,16 +106,3 @@ class Event
   end
 
 end
-
-binding.pry
-puts "Program ends here."
-
-=begin
-def self.count
-end
-
-
-def self.all?
-  return @@all_users
-end
-=end
