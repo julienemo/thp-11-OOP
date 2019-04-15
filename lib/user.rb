@@ -3,8 +3,7 @@ require 'pry'
 class User
 
 # PUBLIC SECTION
-  attr_accessor :email
-  attr_accessor :age
+  attr_accessor :email, :age
   @@all_users = []
 
   # INSTANCE METHODS
@@ -31,14 +30,23 @@ class User
   end
 
   def self.all
-    ObjectSpace.each_object(self).to_a
+    @@all_users
+    # alternatively use ObjectSpace.each_object(self).to_a
   end
 
   def self.find_by_email(email)
-    user = ObjectSpace.each_object(User).find {
-       |object| object.instance_variable_get(:@email) == email
-       }
-    puts "User found, age #{user.age}."
+    begin
+      user = ObjectSpace.each_object(User).find {
+        |object| object.instance_variable_get(:@email) == email
+      }
+      # alternatively use
+      # @@all_users.each do |user|
+      #   if user.email == email
+      # return user
+      puts "User found, age #{user.age}."
+    rescue
+      puts "No matching user."
+    end
   end
 
   private
