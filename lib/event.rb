@@ -4,12 +4,8 @@ require 'time'
 class Event
 
   # PUBLIC SECTION
-  attr_accessor :start_time
-  attr_accessor :duration
-  attr_accessor :title
-  attr_accessor :attendees
-  attr_reader:status
-  attr_reader:end_time
+  attr_accessor :start_time, :duration, :title, :attendees
+  attr_reader:status, :end_time
   @@event_count = 0
 
   # here is how to start a new event
@@ -45,6 +41,10 @@ class Event
   end
 
   def status
+    unless @start_time.class == Time
+      @start_time = Time.parse(@start_time)
+    end
+
     if Time.now + 30*60 < @start_time
       @status = "futur"
     elsif (Time.now + 30*60 >= @start_time) && (Time.now < @start_time)
@@ -63,7 +63,7 @@ class Event
     puts "Start time: #{@start_time}"
     puts "End time: #{end_time}"
     puts "Duration: #{@duration} minutes"
-    puts "Participants: #{@attendees.each {|attendee|}.join(",")}"
+    puts "Participants: #{@attendees.join(",")}"
   end
 
 
