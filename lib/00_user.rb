@@ -5,37 +5,45 @@ class User
 # PUBLIC SECTION
   attr_accessor :email
   attr_accessor :age
-  @@user_count = 0
-  #@@all_users = [] # haven't figured out how to increment
+  @@all_users = []
 
+  # INSTANCE METHODS
   def initialize(email, age)
-
-    if check_info(email,age)
+    # data validation : if good format, proceed.
+    if check_format(email,age)
       @email = email
       @age = age
-      @@user_count += 1
+      @@all_users << self
 
-      puts "User n#{@@user_count} created with email and age information"
+      # thi ObjectSpace thing is just something I found online
+      # it looks more efficient than stuff +=1
+      # also tested with the data validation
+      # when there is format error in email and age it doesn't increment
+      puts "User created with email and age information"
     else
       puts "Wrong email or age format.\nEmail should be xxx@xxx.xxx format.\nAge should be natural interger.\nUser creation failded. Please start again."
-      puts "Now #{@@user_count} registered."
     end
   end
 
+  # CLASS METHODS
   def self.count
-   return @@user_count
+    ObjectSpace.each_object(self).count
   end
 
-  =begin
-  def self.all?
-    return @@all_users
+  def self.all
+    ObjectSpace.each_object(self).to_a
   end
-  =end
 
+  def self.find_by_email(email)
+    user = ObjectSpace.each_object(User).find {
+       |object| object.instance_variable_get(:@email) == email
+       }
+    puts "User found, age #{user.age}."
+  end
 
   private
 
-  def check_info(email, age)
+  def check_format(email, age)
     if (email =~ /@/) && (email =~ /./) && (age.to_i == age)
       true
     else
@@ -47,3 +55,9 @@ end
 
 binding.pry
 puts "Program ends here."
+
+=begin
+def self.all?
+  return @@all_users
+end
+=end
