@@ -2,15 +2,6 @@ require 'pry'
 require 'time'
 
 class Event
-  class WorkEvent < Event
-    def is_acceptable?
-      if (@attendees.length > 3) || (@duration > 60)
-        false
-      else
-        true
-      end
-    end
-  end
 
   # PUBLIC SECTION
   attr_accessor :start_time, :duration, :title, :attendees
